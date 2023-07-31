@@ -55,7 +55,21 @@ jobs:
 
 
       - name: Terraform Plan
+        id: plan
         uses: docker://hashicorp/terraform:1.5
         with:
+          entrypoint: /bin/sh
           args: 
-            -chdir=./terraform plan 
+            -c "terraform -chdir=./terraform plan >> plan.txt"
+
+      - name: RUN
+        run: | 
+          ls -lha
+          ls -lha terraform
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: plan.txt
+          comment_tag: plan
+          mode: recreate            
