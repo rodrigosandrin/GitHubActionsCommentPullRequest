@@ -1,0 +1,61 @@
+name: main
+
+# Controls when the workflow will run
+on:
+  push:
+  workflow_dispatch:
+    # inputs:
+    #   datacenter:
+    #     description: Select the Github Runner Datacenter
+    #     default: 'KC'
+    #     type: choice
+    #     options: 
+    #     - KC
+    #     - LA
+
+jobs:
+#   Validate:
+#     runs-on: [self-hosted,Development,Linux]
+    
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Terraform Init
+#         uses: docker://hashicorp/terraform:1.5
+#         with:
+#           args:
+#             -chdir=./terraform init -backend=false
+      
+#       - name: Terraform Validate
+#         uses: docker://hashicorp/terraform:1.5
+#         with:
+#           args: 
+#             -chdir=./terraform validate          
+
+
+#       - name: Static Code Analysis
+#         uses: docker://bridgecrew/checkov:2.0.485
+#         with:
+#           entrypoint: /usr/local/bin/checkov
+#           args:
+#             -d terraform
+
+  Plan:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - uses: actions/checkout@v3 
+
+      - name: Terraform Init
+        uses: docker://hashicorp/terraform:1.5
+        with:
+          args: 
+            -chdir=./terraform init
+
+
+      - name: Terraform Plan
+        uses: docker://hashicorp/terraform:1.5
+        with:
+          args: 
+            -chdir=./terraform plan 

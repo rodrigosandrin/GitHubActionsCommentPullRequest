@@ -1,0 +1,28 @@
+name: comment_pr
+on: pull_request
+
+jobs:
+  example_comment_pr:
+    runs-on: ubuntu-latest
+    name: An example job to comment a PR
+    steps:
+      - name: RUN
+        id: step1
+        run: |
+          {
+          echo "### Workflow variables"
+          echo "| Variable   | Value       |"
+          echo "| ---------- | ----------- |"
+          echo "| env_token  | env_token  |"
+          echo "| env_domain | env_domain |"
+          } >> output.txt
+
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: output.txt
+          comment_tag: execution
+          mode: recreate
+      
+      
