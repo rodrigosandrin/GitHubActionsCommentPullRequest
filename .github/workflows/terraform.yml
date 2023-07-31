@@ -4,6 +4,7 @@ name: main
 on:
   push:
   workflow_dispatch:
+  pull_request:
     # inputs:
     #   datacenter:
     #     description: Select the Github Runner Datacenter
@@ -42,6 +43,8 @@ jobs:
 
   Plan:
     runs-on: ubuntu-latest
+    permissions: 
+        pull-requests: write 
 
 
     steps:
@@ -55,7 +58,21 @@ jobs:
 
 
       - name: Terraform Plan
+        id: plan
         uses: docker://hashicorp/terraform:1.5
         with:
+          entrypoint: /bin/sh
           args: 
-            -chdir=./terraform plan 
+            -c "terraform -chdir=./terraform plan -no-color >> plan.txt"
+
+      - name: RUN
+        run: | 
+          ls -lha
+          ls -lha terraform
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: plan.txt
+          comment_tag: plan
+          mode: upsert            
